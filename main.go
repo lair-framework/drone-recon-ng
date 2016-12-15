@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	version = "1.0.0"
+	version = "1.1.0"
 	tool    = "recon-ng"
 	usage   = `
 	Parses a recon-ng JSON file into a lair project.
@@ -193,6 +193,16 @@ func main() {
 		per.Address = c.Region
 		per.Department = c.Title
 		project.People = append(project.People, per)
+	}
+
+	for _, cred := range recData.Credentials {
+		lc := lair.Credential{}
+		lc.ProjectID = exproject.ID
+		lc.Username = cred.Username
+		lc.Hash = cred.Hash
+		lc.Password = cred.Password
+		lc.Service = cred.Leak
+		project.Credentials = append(project.Credentials, lc)
 	}
 
 	res, err := c.ImportProject(&client.DOptions{ForcePorts: *forcePorts}, project)
